@@ -1,13 +1,18 @@
 
-## 4-class problem
+# 4-class problem
 
 - Last trained on helios on July 1, 2022
 - Number of filter banks changed to 75
 
 
-### Sample results 
+
+
+
+## Sample results 
+
 
 ```
+
 2022-07-01 01:21:39.804627: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
 2022-07-01 01:27:23.509341: W tensorflow/stream_executor/cuda/redzone_allocator.cc:312] Not found: ./bin/ptxas not found
 Relying on driver to perform ptx compilation. This message will be only logged once.
@@ -346,3 +351,89 @@ weighted avg       0.82      0.82      0.82       256
  [ 0  5  5 54]]
  
  ```
+
+
+
+
+## Code snippet
+
+```
+    model = tf.keras.Sequential()
+    model.add(Conv2D(128, [7,11], strides = [2,2], padding = 'SAME', input_shape = (sample_height, sample_width, 1)))
+    model.add(LeakyReLU(alpha = 0.1))
+    model.add(MaxPool2D(padding = 'SAME'))
+
+    model.add(Conv2D(256, [5,5], padding = 'SAME'))
+    model.add(LeakyReLU(alpha = 0.1))
+    model.add(MaxPool2D(padding = 'SAME'))
+
+    model.add(Conv2D(256, [1,1], padding = 'SAME'))
+    model.add(Conv2D(256, [3,3], padding = 'SAME'))
+    model.add(LeakyReLU(alpha = 0.1))
+    model.add(MaxPool2D(padding = 'SAME'))
+
+    model.add(Conv2D(512, [1,1], padding = 'SAME'))
+    model.add(Conv2D(512, [3,3], padding = 'SAME',activation = 'relu'))
+    model.add(Conv2D(512, [1,1], padding = 'SAME'))
+    model.add(Conv2D(512, [3,3], padding = 'SAME', activation = 'relu'))
+    model.add(MaxPool2D(padding = 'SAME'))
+    model.add(Flatten())
+
+    model.add(Dense(4096, activation = 'relu'))
+    model.add(Dropout(0.5))
+
+    model.add(Dense(512, activation = 'relu'))
+    model.add(Dense(4, activation = 'softmax'))
+```
+
+## Model
+```
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d_16 (Conv2D)           (None, 38, 123, 128)      9984      
+_________________________________________________________________
+leaky_re_lu_6 (LeakyReLU)    (None, 38, 123, 128)      0         
+_________________________________________________________________
+max_pooling2d_8 (MaxPooling2 (None, 19, 62, 128)       0         
+_________________________________________________________________
+conv2d_17 (Conv2D)           (None, 19, 62, 256)       819456    
+_________________________________________________________________
+leaky_re_lu_7 (LeakyReLU)    (None, 19, 62, 256)       0         
+_________________________________________________________________
+max_pooling2d_9 (MaxPooling2 (None, 10, 31, 256)       0         
+_________________________________________________________________
+conv2d_18 (Conv2D)           (None, 10, 31, 256)       65792     
+_________________________________________________________________
+conv2d_19 (Conv2D)           (None, 10, 31, 256)       590080    
+_________________________________________________________________
+leaky_re_lu_8 (LeakyReLU)    (None, 10, 31, 256)       0         
+_________________________________________________________________
+max_pooling2d_10 (MaxPooling (None, 5, 16, 256)        0         
+_________________________________________________________________
+conv2d_20 (Conv2D)           (None, 5, 16, 512)        131584    
+_________________________________________________________________
+conv2d_21 (Conv2D)           (None, 5, 16, 512)        2359808   
+_________________________________________________________________
+conv2d_22 (Conv2D)           (None, 5, 16, 512)        262656    
+_________________________________________________________________
+conv2d_23 (Conv2D)           (None, 5, 16, 512)        2359808   
+_________________________________________________________________
+max_pooling2d_11 (MaxPooling (None, 3, 8, 512)         0         
+_________________________________________________________________
+flatten_2 (Flatten)          (None, 12288)             0         
+_________________________________________________________________
+dense_6 (Dense)              (None, 4096)              50335744  
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 4096)              0         
+_________________________________________________________________
+dense_7 (Dense)              (None, 512)               2097664   
+_________________________________________________________________
+dense_8 (Dense)              (None, 4)                 2052      
+=================================================================
+Total params: 59,034,628
+Trainable params: 59,034,628
+Non-trainable params: 0
+_______________________________
+
+```
