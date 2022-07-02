@@ -1,7 +1,9 @@
 
 ## 4-class problem
 
-Number of filter banks changed to 75
+- Last trained on helios on July 1, 2022
+- Number of filter banks changed to 75
+
 
 ### Sample results 
 
