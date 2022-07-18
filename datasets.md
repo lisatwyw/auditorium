@@ -1,6 +1,8 @@
-# 1
+# RDTR
 
 ## Summary
+
+- 4k Hz
 
 | Grade | 0| 1| 2| 3 | 4|
 |--|--|--|--|--|--|
@@ -17,3 +19,4 @@ for side in ['R', 'L']:
 
 np.sum( df.Diagnosis== diagnosis +'%d' %Grade )                                                                                   
 ```
+
